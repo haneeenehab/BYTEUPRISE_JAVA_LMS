@@ -1,5 +1,7 @@
 package model;
 
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.Date;
 
 public class Member extends Account{
@@ -10,5 +12,9 @@ public class Member extends Account{
         super(accountId, password, person, status);
         this.dateOfMembership = dateOfMembership;
         this.totalBooksCheckedout = totalBooksCheckedout;
+    }
+    public void register(Connection connection) {
+        super.register(connection, dateOfMembership, totalBooksCheckedout);
+
     }
 }

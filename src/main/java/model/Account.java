@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Date;
 
 public class Account {
     private String accountId;
@@ -17,7 +18,8 @@ public class Account {
         this.person = person;
         this.status = status;
     }
-    public void register(Connection connection) {
+
+    public void register(Connection connection, Date dateOfMembership, int totalBooksCheckedout) {
         String SQL = "INSERT INTO `lms`.`account`\n" +
                 "`idString`,\n" +
                 "`password`,\n" +
@@ -29,8 +31,11 @@ public class Account {
                 "`city`,\n" +
                 "`state`,\n" +
                 "`zipcode`,\n" +
-                "`country`)\n"
-                + "VALUES(?,?,?,?,?,?,?,?,?,?,?);";
+                "`country`)\n" +
+                "`isLibrarian`,\n" +
+                "`dateOfMembership`)\n" +
+                "`totalBooksCheckedOut`)\n"
+                + "VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?);";
 
         long id = 0;
         try {
@@ -49,6 +54,14 @@ public class Account {
             pstmt.setString(9, person.getAddress().getState());
             pstmt.setString(10, person.getAddress().getZipCode());
             pstmt.setString(11, person.getAddress().getCountry());
+            if(dateOfMembership != null) {
+                pstmt.setBoolean(12,false);
+                pstmt.setDate(13,new java.sql.Date(dateOfMembership.getTime()));
+                pstmt.setInt(14,totalBooksCheckedout);
+            }
+            else{
+                pstmt.setBoolean(12,true);
+            }
             pstmt.executeUpdate();
 
         } catch (SQLException ex) {
