@@ -61,6 +61,8 @@ public class Account {
             }
             else{
                 pstmt.setBoolean(12,true);
+                pstmt.setDate(13,null);
+                pstmt.setInt(14,0);
             }
             pstmt.executeUpdate();
 
