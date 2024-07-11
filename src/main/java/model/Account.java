@@ -19,7 +19,7 @@ public class Account {
         this.status = status;
     }
 
-    public String getID(){
+    public String getID() {
         return accountId;
     }
 
@@ -58,15 +58,14 @@ public class Account {
             pstmt.setString(9, person.getAddress().getState());
             pstmt.setString(10, person.getAddress().getZipCode());
             pstmt.setString(11, person.getAddress().getCountry());
-            if(dateOfMembership != null) {
-                pstmt.setBoolean(12,false);
-                pstmt.setDate(13,new java.sql.Date(dateOfMembership.getTime()));
-                pstmt.setInt(14,totalBooksCheckedout);
-            }
-            else{
-                pstmt.setBoolean(12,true);
-                pstmt.setDate(13,null);
-                pstmt.setInt(14,0);
+            if (dateOfMembership != null) {
+                pstmt.setBoolean(12, false);
+                pstmt.setDate(13, new java.sql.Date(dateOfMembership.getTime()));
+                pstmt.setInt(14, totalBooksCheckedout);
+            } else {
+                pstmt.setBoolean(12, true);
+                pstmt.setDate(13, null);
+                pstmt.setInt(14, 0);
             }
             pstmt.executeUpdate();
 
@@ -75,13 +74,16 @@ public class Account {
             ex.printStackTrace();
         }
     }
-    public static void main(String [] args){
+
+    public static void main(String[] args) {
 //        Address address = new Address("street1", "city1", "state1", "zipcode1", "country1");
 //        Person person = new Person("haneen", address, "010", "h@gmail.com");
-//        Account account = new Account("1", "pass", person, AccountStatus.Active);
-//        account.register(connection, new Date(2024, 4, 2), 0);
+//        Librarian account = new Librarian("1", "pass", person, AccountStatus.Active);
+//            account.register(connection, null, 2);
+//
 //        Address address1 = new Address("street2", "city2", "state2", "zipcode2", "country2");
 //        Person person1 = new Person("eman", address1, "011", "e@gmail.com");
-//        Account account1 = new Account("2", "pass", person1, AccountStatus.Active);
+//        Member account1 = new Member("2", "pass", person1, AccountStatus.Active, new Date(2024, 4, 2), 0);
+        //  account1.register(connection, new Date(2024, 4, 2), 0);
     }
 }

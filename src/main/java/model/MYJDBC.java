@@ -52,19 +52,11 @@ public class MYJDBC {
             Connection connection = DriverManager.getConnection(
                     "jdbc:mysql://127.0.0.1:3306/lms", "root", "1234"
             );
-            init(connection);
-            Address address = new Address("street1", "city1", "state1", "zipcode1", "country1");
-            Person person = new Person("haneen", address, "010", "h@gmail.com");
-            Librarian account = new Librarian("1", "pass", person, AccountStatus.Active);
-//            account.register(connection, null, 2);
-//
-            Address address1 = new Address("street2", "city2", "state2", "zipcode2", "country2");
-            Person person1 = new Person("eman", address1, "011", "e@gmail.com");
-            Member account1 = new Member("2", "pass", person1, AccountStatus.Active, new Date(2024, 4, 2), 0);
-            //  account1.register(connection, new Date(2024, 4, 2), 0);
 
-            // account.unblockMember(connection,account1 );
-            // account1.cancelMembership(connection);
+            //  init(connection);
+            Book book = new Book("978-0307409323", "A Short History of Nearly Everything", "Science", "Bill Bryson",
+                    "English", 544, "Random House");
+            Librarian.deleteBook(connection,book);
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery("select * from account");
             while (resultSet.next()) {
