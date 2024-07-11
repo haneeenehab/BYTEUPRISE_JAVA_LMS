@@ -126,5 +126,33 @@ public class Librarian extends Account {
             ex.printStackTrace();
         }
     }
+    public static void returnBook(Connection connection, Book book, BookItem bookItem) {
+        String SQL = "UPDATE `lms`.`bookItem`\n" +
+                "SET\n" +
+                "bookStatus = \"Available\" where barcode like \"" + bookItem.getBarcode() + "\"";
+        try {
+            connection.setAutoCommit(true);
+            PreparedStatement pstmt = connection.prepareStatement(SQL,
+                    Statement.RETURN_GENERATED_KEYS);
+            pstmt.executeUpdate();
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+            ex.printStackTrace();
+        }
+    }
+    public static void reserveBook(Connection connection, Book book, BookItem bookItem, Member member) {
+        String SQL = "UPDATE `lms`.`bookItem`\n" +
+                "SET\n" +
+                "bookStatus = \"Reserved\" and resMember = " + member.getID() + "where barcode like \"" + bookItem.getBarcode() + "\"";
+        try {
+            connection.setAutoCommit(true);
+            PreparedStatement pstmt = connection.prepareStatement(SQL,
+                    Statement.RETURN_GENERATED_KEYS);
+            pstmt.executeUpdate();
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+            ex.printStackTrace();
+        }
+    }
 
 }
