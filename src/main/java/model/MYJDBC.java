@@ -51,7 +51,8 @@ public class MYJDBC {
             Member account1 = new Member("2", "pass", person1, AccountStatus.Active,new Date(2024, 4, 2), 0);
           //  account1.register(connection, new Date(2024, 4, 2), 0);
 
-          account.unblockMember(connection,account1 );
+         // account.unblockMember(connection,account1 );
+            account1.cancelMembership(connection);
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery("select * from account");
             while (resultSet.next()) {

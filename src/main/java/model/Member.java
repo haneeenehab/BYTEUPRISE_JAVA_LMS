@@ -1,7 +1,9 @@
 package model;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.Date;
 
 public class Member extends Account{
@@ -15,5 +17,19 @@ public class Member extends Account{
     }
     public void register(Connection connection) {
         super.register(connection, dateOfMembership, totalBooksCheckedout);
+    }
+    public void cancelMembership(Connection connection) {
+        String SQL = "UPDATE `lms`.`account`\n" +
+                "SET\n" +
+                "status = \"Canceled\" where idString like \"" + getID() + "\"";
+        try {
+            connection.setAutoCommit(true);
+            PreparedStatement pstmt = connection.prepareStatement(SQL,
+                    Statement.RETURN_GENERATED_KEYS);
+            pstmt.executeUpdate();
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+            ex.printStackTrace();
+        }
     }
 }
