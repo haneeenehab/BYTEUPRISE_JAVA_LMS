@@ -103,7 +103,7 @@ public class Librarian extends Account {
             pstmt.setString(1, bookItem.getBarcode());
             pstmt.setDate(2, bookItem.getPublicationDate());
             pstmt.setDouble(3, bookItem.getPrice());
-            pstmt.setString(4, bookItem.getStatus().toString());
+            pstmt.setString(4, bookItem.getStatus(connection));
             pstmt.setDate(5, bookItem.getDateOfPurchase());
             pstmt.setDate(6, bookItem.getBorrowed());
             pstmt.setDate(7, bookItem.getDueDate());
@@ -129,10 +129,12 @@ public class Librarian extends Account {
         }
     }
 
-    public static void returnBook(Connection connection, Book book, BookItem bookItem) {
+    public static void returnBook(Connection connection, BookItem bookItem) {
+        String state = bookItem.isReserved(connection) ? "Reserved" : "Available";
         String SQL = "UPDATE `lms`.`bookItem`\n" +
                 "SET\n" +
-                "bookStatus = \"Available\" where barcode like \"" + bookItem.getBarcode() + "\"";
+                "bookStatus = \"" + state + "\", issToMember = null where barcode like \"" + bookItem.getBarcode() + "\"; ";
+
         try {
             connection.setAutoCommit(true);
             PreparedStatement pstmt = connection.prepareStatement(SQL,
@@ -145,8 +147,31 @@ public class Librarian extends Account {
     }
 
     public static void reserveBook(Connection connection, BookItem bookItem, Member member) {
+        String SQL = "";
+        if (bookItem.getStatus(connection).equals("Loaned")) {
+            SQL = "update bookitem \n" +
+                    "set resMember = \"" + member.getID() +
+                    "\" where barcode = \"" + bookItem.getBarcode() + "\";";
+        } else {
+            SQL = "update bookitem \n" +
+                    "set bookStatus = \"Reserved\", resMember = \"" + member.getID() +
+                    "\" where barcode = \"" + bookItem.getBarcode() + "\";";
+        }
+
+        try {
+            connection.setAutoCommit(true);
+            PreparedStatement pstmt = connection.prepareStatement(SQL,
+                    Statement.RETURN_GENERATED_KEYS);
+            pstmt.executeUpdate();
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+            ex.printStackTrace();
+        }
+    }
+
+    public static void issueBook(Connection connection, BookItem bookItem, Member member) {
         String SQL = "update bookitem \n" +
-                "set bookStatus = \"Reserved\", resMember = \"" + member.getID() +
+                "set bookStatus = \"Loaned\", issToMember = \"" + member.getID() +
                 "\" where barcode = \"" + bookItem.getBarcode() + "\";";
         try {
             connection.setAutoCommit(true);
@@ -158,5 +183,6 @@ public class Librarian extends Account {
             ex.printStackTrace();
         }
     }
+
 
 }

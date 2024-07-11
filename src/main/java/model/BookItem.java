@@ -1,5 +1,9 @@
 package model;
 
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.Date;
 
 public class BookItem {
@@ -38,8 +42,31 @@ public class BookItem {
         return price;
     }
 
-    public BookStatus getStatus() {
-        return status;
+    public String getStatus(Connection connection) {
+        try {
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery("select bookStatus from bookItem where barcode = '" + barcode + "'");
+            while (resultSet.next()) {
+               return resultSet.getString("bookStatus");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return "";
+    }
+    public boolean isReserved(Connection connection){
+        try {
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery("select resMember from bookItem where barcode = '" + barcode + "'");
+            while (resultSet.next()) {
+                if (resultSet.getString("resMember") != null){
+                    return true;
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 
     public java.sql.Date getPublicationDate() {
@@ -49,4 +76,5 @@ public class BookItem {
     public java.sql.Date getDateOfPurchase() {
         return (java.sql.Date) dateOfPurchase;
     }
+
 }

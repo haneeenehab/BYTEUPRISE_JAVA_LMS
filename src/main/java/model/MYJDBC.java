@@ -42,6 +42,7 @@ public class MYJDBC {
                 "  dueDate DATE,\n" +
                 "  ISBN VARCHAR(255),\n" +
                 "  resMember VARCHAR(255),\n" +
+                "  issToMember VARCHAR(255),\n" +
                 "  FOREIGN KEY (ISBN) REFERENCES Book(ISBN) ON DELETE CASCADE \n" +
                 ");";
         try {
@@ -77,14 +78,10 @@ public class MYJDBC {
             Person person1 = new Person("eman", address1, "011", "e@gmail.com");
             Member account1 = new Member("2", "pass", person1, AccountStatus.Active, new Date(2024, 4, 2), 0);
             //account1.register(connection, new Date(2024, 4, 2), 0);
-            //Librarian.returnBook(connection,book,bookItem);
-            Librarian.reserveBook(connection,bookItem,account1);
+            //Librarian.returnBook(connection,bookItem);
+           // Librarian.reserveBook(connection,bookItem,account1);
            // Librarian.deleteBookItem(connection,bookItem);
-            Statement statement = connection.createStatement();
-            ResultSet resultSet = statement.executeQuery("select * from account");
-            while (resultSet.next()) {
-                System.out.println(resultSet.getString("country"));
-            }
+            System.out.println(bookItem.isReserved(connection));
         } catch (SQLException e) {
             e.printStackTrace();
         }
