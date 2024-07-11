@@ -42,8 +42,7 @@ public class MYJDBC {
                 "  dueDate DATE,\n" +
                 "  ISBN VARCHAR(255),\n" +
                 "  resMember VARCHAR(255),\n" +
-                "  FOREIGN KEY (ISBN) REFERENCES Book(ISBN) ON DELETE CASCADE, \n" +
-                "  FOREIGN KEY (resMember) REFERENCES account(idString) \n" +
+                "  FOREIGN KEY (ISBN) REFERENCES Book(ISBN) ON DELETE CASCADE \n" +
                 ");";
         try {
             connection.setAutoCommit(true);
@@ -68,12 +67,19 @@ public class MYJDBC {
                     "jdbc:mysql://127.0.0.1:3306/lms", "root", "1234"
             );
 
-            // init(connection);
+          //  init(connection);
             Book book = new Book("978-0307409323", "A Short History of Nearly Everything", "Science", "Bill Bryson",
                     "English", 544, "Random House");
             BookItem bookItem = new BookItem("1234567890123", new java.sql.Date(2023, 1, 1), new java.sql.Date(2023, 1, 1), 10.99, BookStatus.Available, new java.sql.Date(2023, 1, 1), new java.sql.Date(2023, 1, 1));
-            Librarian.addBook(connection, book);
-            Librarian.addBookItem(connection,book,bookItem);
+//            Librarian.addBook(connection, book);
+//            Librarian.addBookItem(connection,book,bookItem);
+            Address address1 = new Address("street2", "city2", "state2", "zipcode2", "country2");
+            Person person1 = new Person("eman", address1, "011", "e@gmail.com");
+            Member account1 = new Member("2", "pass", person1, AccountStatus.Active, new Date(2024, 4, 2), 0);
+            //account1.register(connection, new Date(2024, 4, 2), 0);
+            //Librarian.returnBook(connection,book,bookItem);
+            Librarian.reserveBook(connection,bookItem,account1);
+           // Librarian.deleteBookItem(connection,bookItem);
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery("select * from account");
             while (resultSet.next()) {

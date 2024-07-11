@@ -84,6 +84,7 @@ public class Librarian extends Account {
             ex.printStackTrace();
         }
     }
+
     public static void addBookItem(Connection connection, Book book, BookItem bookItem) {
         String SQL = "INSERT INTO `lms`.`bookitem`\n" +
                 "(`barcode`,\n" +
@@ -102,10 +103,10 @@ public class Librarian extends Account {
             pstmt.setString(1, bookItem.getBarcode());
             pstmt.setDate(2, bookItem.getPublicationDate());
             pstmt.setDouble(3, bookItem.getPrice());
-            pstmt.setString(4,bookItem.getStatus().toString());
-            pstmt.setDate(5,bookItem.getDateOfPurchase());
-            pstmt.setDate(6,bookItem.getBorrowed());
-            pstmt.setDate(7,bookItem.getDueDate());
+            pstmt.setString(4, bookItem.getStatus().toString());
+            pstmt.setDate(5, bookItem.getDateOfPurchase());
+            pstmt.setDate(6, bookItem.getBorrowed());
+            pstmt.setDate(7, bookItem.getDueDate());
             pstmt.setString(8, book.getISBN());
             pstmt.executeUpdate();
         } catch (SQLException ex) {
@@ -113,9 +114,10 @@ public class Librarian extends Account {
             ex.printStackTrace();
         }
     }
-    public static void deleteBookItem(Connection connection,BookItem bookItem) {
+
+    public static void deleteBookItem(Connection connection, BookItem bookItem) {
         String SQL = "DELETE FROM `lms`.`bookItem`\n" +
-                "WHERE barcode like \"" + bookItem.getBarcode()+ "\";";
+                "WHERE barcode like \"" + bookItem.getBarcode() + "\";";
         try {
             connection.setAutoCommit(true);
             PreparedStatement pstmt = connection.prepareStatement(SQL,
@@ -126,6 +128,7 @@ public class Librarian extends Account {
             ex.printStackTrace();
         }
     }
+
     public static void returnBook(Connection connection, Book book, BookItem bookItem) {
         String SQL = "UPDATE `lms`.`bookItem`\n" +
                 "SET\n" +
@@ -140,10 +143,11 @@ public class Librarian extends Account {
             ex.printStackTrace();
         }
     }
-    public static void reserveBook(Connection connection, Book book, BookItem bookItem, Member member) {
-        String SQL = "UPDATE `lms`.`bookItem`\n" +
-                "SET\n" +
-                "bookStatus = \"Reserved\" and resMember = " + member.getID() + "where barcode like \"" + bookItem.getBarcode() + "\"";
+
+    public static void reserveBook(Connection connection, BookItem bookItem, Member member) {
+        String SQL = "update bookitem \n" +
+                "set bookStatus = \"Reserved\", resMember = \"" + member.getID() +
+                "\" where barcode = \"" + bookItem.getBarcode() + "\";";
         try {
             connection.setAutoCommit(true);
             PreparedStatement pstmt = connection.prepareStatement(SQL,
