@@ -32,6 +32,16 @@ public class MYJDBC {
                 "  numberOfPages INT,\n" +
                 "  author VARCHAR(255)\n" +
                 ");";
+        String SQLBookItem = "CREATE TABLE bookItem (\n" +
+                "  barcode VARCHAR(255) PRIMARY KEY,\n" +
+                "  publicationDate Date,\n" +
+                "  price double,\n" +
+                "  bookSatus varchar(255),\n" +
+                "  dateOfPurchase Date,\n" +
+                "  borrowed Date,\n" +
+                "  dueDate Date,\n" +
+                "  ISBN varchar(255) references book(ISBN)\n" +
+                ");";
         try {
             connection.setAutoCommit(true);
             PreparedStatement pstmt = connection.prepareStatement(SQLAccount,
@@ -40,6 +50,8 @@ public class MYJDBC {
             PreparedStatement pstmt1 = connection.prepareStatement(SQLBook,
                     Statement.RETURN_GENERATED_KEYS);
             pstmt1.executeUpdate();
+            PreparedStatement pstmt2 = connection.prepareStatement(SQLBookItem);
+            pstmt2.executeUpdate();
 
         } catch (SQLException ex) {
             System.out.println(ex.getMessage());
@@ -53,10 +65,10 @@ public class MYJDBC {
                     "jdbc:mysql://127.0.0.1:3306/lms", "root", "1234"
             );
 
-            //  init(connection);
+            init(connection);
             Book book = new Book("978-0307409323", "A Short History of Nearly Everything", "Science", "Bill Bryson",
                     "English", 544, "Random House");
-            Librarian.deleteBook(connection,book);
+          //  Librarian.deleteBook(connection,book);
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery("select * from account");
             while (resultSet.next()) {
