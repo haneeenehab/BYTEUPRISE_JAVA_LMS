@@ -83,6 +83,48 @@ public class Librarian extends Account {
             System.out.println(ex.getMessage());
             ex.printStackTrace();
         }
-
     }
+    public static void addBookItem(Connection connection, Book book, BookItem bookItem) {
+        String SQL = "INSERT INTO `lms`.`bookitem`\n" +
+                "(`barcode`,\n" +
+                "`publicationDate`,\n" +
+                "`price`,\n" +
+                "`bookSatus`,\n" +
+                "`dateOfPurchase`,\n" +
+                "`borrowed`,\n" +
+                "`dueDate`,\n" +
+                "`ISBN`)\n" +
+                "VALUES (?,?,?,?,?,?,?,?)";
+        try {
+            connection.setAutoCommit(true);
+            PreparedStatement pstmt = connection.prepareStatement(SQL,
+                    Statement.RETURN_GENERATED_KEYS);
+            pstmt.setString(1, bookItem.getBarcode());
+            pstmt.setDate(2, bookItem.getPublicationDate());
+            pstmt.setDouble(3, bookItem.getPrice());
+            pstmt.setString(4,bookItem.getStatus().toString());
+            pstmt.setDate(5,bookItem.getDateOfPurchase());
+            pstmt.setDate(6,bookItem.getBorrowed());
+            pstmt.setDate(7,bookItem.getDueDate());
+            pstmt.setString(8, book.getISBN());
+            pstmt.executeUpdate();
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+            ex.printStackTrace();
+        }
+    }
+    public static void deleteBookItem(Connection connection,BookItem bookItem) {
+        String SQL = "DELETE FROM `lms`.`bookItem`\n" +
+                "WHERE barcode like \"" + bookItem.getBarcode()+ "\";";
+        try {
+            connection.setAutoCommit(true);
+            PreparedStatement pstmt = connection.prepareStatement(SQL,
+                    Statement.RETURN_GENERATED_KEYS);
+            pstmt.executeUpdate();
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+            ex.printStackTrace();
+        }
+    }
+
 }

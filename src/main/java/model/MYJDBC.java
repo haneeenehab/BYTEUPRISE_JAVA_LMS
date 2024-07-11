@@ -32,15 +32,16 @@ public class MYJDBC {
                 "  numberOfPages INT,\n" +
                 "  author VARCHAR(255)\n" +
                 ");";
-        String SQLBookItem = "CREATE TABLE bookItem (\n" +
+        String SQLBookItem = "CREATE TABLE BookItem (\n" +
                 "  barcode VARCHAR(255) PRIMARY KEY,\n" +
-                "  publicationDate Date,\n" +
-                "  price double,\n" +
-                "  bookSatus varchar(255),\n" +
-                "  dateOfPurchase Date,\n" +
-                "  borrowed Date,\n" +
-                "  dueDate Date,\n" +
-                "  ISBN varchar(255) references book(ISBN)\n" +
+                "  publicationDate DATE,\n" +
+                "  price DOUBLE,\n" +
+                "  bookStatus VARCHAR(255),  -- Corrected typo (status instead of satus)\n" +
+                "  dateOfPurchase DATE,\n" +
+                "  borrowed DATE,\n" +
+                "  dueDate DATE,\n" +
+                "  ISBN VARCHAR(255),\n" +
+                "  FOREIGN KEY (ISBN) REFERENCES Book(ISBN) ON DELETE CASCADE \n" +
                 ");";
         try {
             connection.setAutoCommit(true);
