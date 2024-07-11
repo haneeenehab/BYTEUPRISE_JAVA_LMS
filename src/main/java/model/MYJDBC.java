@@ -8,8 +8,7 @@ public class MYJDBC {
     public static void init(Connection connection) {
         String SQL =
                 "CREATE TABLE account (" +
-                        "id int not null AUTO_INCREMENT PRIMARY KEY," +
-                        "idString varchar(255) not null," +
+                        "idString varchar(255) not null PRIMARY KEY," +
                         "password VARCHAR(255) NOT NULL," +
                         "status VARCHAR(255)," +
                         "name VARCHAR(255)," +
@@ -41,29 +40,25 @@ public class MYJDBC {
             Connection connection = DriverManager.getConnection(
                     "jdbc:mysql://127.0.0.1:3306/lms", "root", "1234"
             );
-          //  init(connection);
+            // init(connection)
+            Address address = new Address("street1", "city1", "state1", "zipcode1", "country1");
+            Person person = new Person("haneen", address, "010", "h@gmail.com");
+            Librarian account = new Librarian("1", "pass", person, AccountStatus.Active);
+//            account.register(connection, null, 2);
+//
+            Address address1 = new Address("street2", "city2", "state2", "zipcode2", "country2");
+            Person person1 = new Person("eman", address1, "011", "e@gmail.com");
+            Member account1 = new Member("2", "pass", person1, AccountStatus.Active,new Date(2024, 4, 2), 0);
+          //  account1.register(connection, new Date(2024, 4, 2), 0);
 
-//            Address address = new Address("street1", "city1", "state1", "zipcode1", "country1");
-//            Person person = new Person("haneen", address, "010", "h@gmail.com");
-//            Account account = new Account("1", "pass", person, AccountStatus.Active);
-//            account.register(connection, new Date(2024, 4, 2), 0);
-//            Address address1 = new Address("street2", "city2", "state2", "zipcode2", "country2");
-//            Person person1 = new Person("eman", address1, "012", "e@gmail.com");
-//            Account account1 = new Account("2", "pass", person1, AccountStatus.Active);
-//            account1.register(connection, new Date(2024, 5, 2), 1);
-
-            Address address2= new Address("street3", "city3", "state3", "zipcode3", "country3");
-            Person person2 = new Person("ahmed", address2, "011", "a@gmail.com");
-            Account account2 = new Account("3", "pass", person2, AccountStatus.Active);
-            account2.register(connection, null, 0);
+          account.unblockMember(connection,account1 );
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery("select * from account");
             while (resultSet.next()) {
                 System.out.println(resultSet.getString("country"));
-              }
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
     }
 }

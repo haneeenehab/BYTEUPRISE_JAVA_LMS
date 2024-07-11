@@ -19,6 +19,10 @@ public class Account {
         this.status = status;
     }
 
+    public String getID(){
+        return accountId;
+    }
+
     public void register(Connection connection, Date dateOfMembership, int totalBooksCheckedout) {
         String SQL = "INSERT INTO `lms`.`account`" +
                 "(`idString`," +
@@ -72,6 +76,12 @@ public class Account {
         }
     }
     public static void main(String [] args){
-
+//        Address address = new Address("street1", "city1", "state1", "zipcode1", "country1");
+//        Person person = new Person("haneen", address, "010", "h@gmail.com");
+//        Account account = new Account("1", "pass", person, AccountStatus.Active);
+//        account.register(connection, new Date(2024, 4, 2), 0);
+//        Address address1 = new Address("street2", "city2", "state2", "zipcode2", "country2");
+//        Person person1 = new Person("eman", address1, "011", "e@gmail.com");
+//        Account account1 = new Account("2", "pass", person1, AccountStatus.Active);
     }
 }
