@@ -4,15 +4,15 @@ import java.util.Date;
 
 public class BookItem {
     private String barcode;
-    private Date borrowed;
-    private Date dueDate;
+    private java.sql.Date borrowed;
+    private java.sql.Date dueDate;
     private double price;
     private BookStatus status;
-    private Date publicationDate;
-    private Date dateOfPurchase;
+    private java.sql.Date publicationDate;
+    private java.sql.Date dateOfPurchase;
 
-    public BookItem(String barcode, Date borrowed, Date dueDate, double price, BookStatus status,
-                    Date publicationDate, Date dateOfPurchase) {
+    public BookItem(String barcode, java.sql.Date borrowed, java.sql.Date dueDate, double price, BookStatus status,
+                    java.sql.Date publicationDate, java.sql.Date dateOfPurchase) {
         this.barcode = barcode;
         this.borrowed = borrowed;
         this.dueDate = dueDate;

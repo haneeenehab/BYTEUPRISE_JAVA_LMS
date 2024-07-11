@@ -69,7 +69,9 @@ public class MYJDBC {
             init(connection);
             Book book = new Book("978-0307409323", "A Short History of Nearly Everything", "Science", "Bill Bryson",
                     "English", 544, "Random House");
-          //  Librarian.deleteBook(connection,book);
+            BookItem bookItem = new BookItem("1234567890123", new java.sql.Date(2023,1,1), new java.sql.Date(2023,1,1), 10.99, BookStatus.Available, new java.sql.Date(2023,1,1),new java.sql.Date(2023,1,1));
+              Librarian.addBook(connection,book);
+              Librarian.addBookItem(connection,book,bookItem);
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery("select * from account");
             while (resultSet.next()) {

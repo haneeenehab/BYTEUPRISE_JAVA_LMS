@@ -89,7 +89,7 @@ public class Librarian extends Account {
                 "(`barcode`,\n" +
                 "`publicationDate`,\n" +
                 "`price`,\n" +
-                "`bookSatus`,\n" +
+                "`bookStatus`,\n" +
                 "`dateOfPurchase`,\n" +
                 "`borrowed`,\n" +
                 "`dueDate`,\n" +
