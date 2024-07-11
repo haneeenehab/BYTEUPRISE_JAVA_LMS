@@ -20,26 +20,26 @@ public class Account {
     }
 
     public void register(Connection connection, Date dateOfMembership, int totalBooksCheckedout) {
-        String SQL = "INSERT INTO `lms`.`account`\n" +
-                "`idString`,\n" +
-                "`password`,\n" +
-                "`status`,\n" +
-                "`name`,\n" +
-                "`email`,\n" +
-                "`phone`,\n" +
-                "`streetAddress`,\n" +
-                "`city`,\n" +
-                "`state`,\n" +
-                "`zipcode`,\n" +
-                "`country`)\n" +
-                "`isLibrarian`,\n" +
-                "`dateOfMembership`)\n" +
-                "`totalBooksCheckedOut`)\n"
+        String SQL = "INSERT INTO `lms`.`account`" +
+                "(`idString`," +
+                "`password`," +
+                "`status`," +
+                "`name`," +
+                "`email`," +
+                "`phone`," +
+                "`streetAddress`," +
+                "`city`," +
+                "`state`," +
+                "`zipcode`," +
+                "`country`," +
+                "`isLibrarian`," +
+                "`dateOfMembership`," +
+                "`totalBooksCheckedOut`)"
                 + "VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?);";
 
         long id = 0;
         try {
-            connection.setAutoCommit(false);
+            connection.setAutoCommit(true);
             PreparedStatement pstmt = connection.prepareStatement(SQL,
                     Statement.RETURN_GENERATED_KEYS);
 
@@ -68,5 +68,8 @@ public class Account {
             System.out.println(ex.getMessage());
             ex.printStackTrace();
         }
+    }
+    public static void main(String [] args){
+
     }
 }

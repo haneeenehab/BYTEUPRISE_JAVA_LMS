@@ -15,6 +15,5 @@ public class Member extends Account{
     }
     public void register(Connection connection) {
         super.register(connection, dateOfMembership, totalBooksCheckedout);
-
     }
 }
