@@ -154,11 +154,30 @@ public class Librarian extends Account {
                     "set bookStatus = \"Reserved\", resMember = \"" + member.getID() +
                     "\" where barcode = \"" + bookItem.getBarcode() + "\";";
         }
-
         try {
             connection.setAutoCommit(true);
             PreparedStatement pstmt = connection.prepareStatement(SQL,
                     Statement.RETURN_GENERATED_KEYS);
+            pstmt.executeUpdate();
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+            ex.printStackTrace();
+        }
+        String SQLInsert = "INSERT INTO `lms`.`bookreservation`\n" +
+                "(`creationDate`,\n" +
+                "`status`,\n" +
+                "`bookBarcode`,\n" +
+                "`memberId`)" +
+                "VALUES (?,?,?,?)";
+        try {
+            connection.setAutoCommit(true);
+            PreparedStatement pstmt = connection.prepareStatement(SQLInsert,
+                    Statement.RETURN_GENERATED_KEYS);
+            //todo: date
+            pstmt.setDate(1, new java.sql.Date(2023));
+            pstmt.setString(2, ReservationStatus.Pending.toString());
+            pstmt.setString(3, bookItem.getBarcode());
+            pstmt.setString(4, member.getID());
             pstmt.executeUpdate();
         } catch (SQLException ex) {
             System.out.println(ex.getMessage());
@@ -167,25 +186,46 @@ public class Librarian extends Account {
     }
 
     public static void issueBook(Connection connection, BookItem bookItem, Member member) throws LibraryException {
-        if (bookItem.isReserved(connection)) {
-            throw new LibraryException("Book is reserved!");
+        if (bookItem.isReserved(connection) && !resMemberCheck(connection, bookItem, member)) {
+            throw new LibraryException("Book is reserved by another member!");
         }
 
         String SQL = "update bookitem \n" +
                 "set bookStatus = \"Loaned\", issToMember = \"" + member.getID() +
                 "\" where barcode = \"" + bookItem.getBarcode() + "\";";
+        String SQL2 = "update bookreservation \n" +
+                "set status = \"Completed\" where barcode = \"" + bookItem.getBarcode() + "\";";
         try {
             connection.setAutoCommit(true);
             PreparedStatement pstmt = connection.prepareStatement(SQL,
                     Statement.RETURN_GENERATED_KEYS);
             pstmt.executeUpdate();
+            PreparedStatement pstmt2 = connection.prepareStatement(SQL2,
+                    Statement.RETURN_GENERATED_KEYS);
+            pstmt2.executeUpdate();
         } catch (SQLException ex) {
             System.out.println(ex.getMessage());
             ex.printStackTrace();
         }
     }
 
+    public static boolean resMemberCheck(Connection connection, BookItem bookItem, Member member) {
+        String SQL = "select memberId from bookreservation\n" +
+                "where bookbarcode like \"" + bookItem.getBarcode() + "\" ";
+        try {
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery(SQL);
+            while (resultSet.next()) {
+                if (resultSet.getString("memberId").equals(member.getID())) {
+                    return true;
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
 
+    }
 
 
 }

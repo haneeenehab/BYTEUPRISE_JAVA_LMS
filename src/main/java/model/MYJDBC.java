@@ -36,14 +36,20 @@ public class MYJDBC {
                 "  barcode VARCHAR(255) PRIMARY KEY,\n" +
                 "  publicationDate DATE,\n" +
                 "  price DOUBLE,\n" +
-                "  bookStatus VARCHAR(255),  -- Corrected typo (status instead of satus)\n" +
+                "  bookStatus VARCHAR(255),\n" +
                 "  dateOfPurchase DATE,\n" +
                 "  borrowed DATE,\n" +
                 "  dueDate DATE,\n" +
-                "  ISBN VARCHAR(255),\n" +
                 "  resMember VARCHAR(255),\n" +
                 "  issToMember VARCHAR(255),\n" +
                 "  FOREIGN KEY (ISBN) REFERENCES Book(ISBN) ON DELETE CASCADE \n" +
+                ");";
+        String SQLBookReservations = "CREATE TABLE bookReservation (\n" +
+                "  creationDate DATE NOT NULL,\n" +
+                "  status VARCHAR(255) NOT NULL,\n" +
+                "  bookBarcode VARCHAR(255) NOT NULL,\n" +
+                "  memberId INT NOT NULL,\n" +
+                "  PRIMARY KEY (bookBarcode, memberId) \n" +
                 ");";
         try {
             connection.setAutoCommit(true);
@@ -55,6 +61,8 @@ public class MYJDBC {
             pstmt1.executeUpdate();
             PreparedStatement pstmt2 = connection.prepareStatement(SQLBookItem);
             pstmt2.executeUpdate();
+            PreparedStatement pstmt3 = connection.prepareStatement(SQLBookReservations);
+            pstmt3.executeUpdate();
 
         } catch (SQLException ex) {
             System.out.println(ex.getMessage());
