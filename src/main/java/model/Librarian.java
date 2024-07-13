@@ -169,7 +169,11 @@ public class Librarian extends Account {
         }
     }
 
-    public static void issueBook(Connection connection, BookItem bookItem, Member member) {
+    public static void issueBook(Connection connection, BookItem bookItem, Member member) throws LibraryException {
+        if (bookItem.isReserved(connection)) {
+            throw new LibraryException("Book is reserved!");
+        }
+
         String SQL = "update bookitem \n" +
                 "set bookStatus = \"Loaned\", issToMember = \"" + member.getID() +
                 "\" where barcode = \"" + bookItem.getBarcode() + "\";";

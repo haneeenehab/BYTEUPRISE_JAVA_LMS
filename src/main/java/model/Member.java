@@ -6,7 +6,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Date;
 
-public class Member extends Account{
+public class Member extends Account {
     private Date dateOfMembership;
     private int totalBooksCheckedout;
 
@@ -15,9 +15,15 @@ public class Member extends Account{
         this.dateOfMembership = dateOfMembership;
         this.totalBooksCheckedout = totalBooksCheckedout;
     }
+
     public void register(Connection connection) {
         super.register(connection, dateOfMembership, totalBooksCheckedout);
     }
+
+    public int getTotalBooksCheckedout() {
+        return totalBooksCheckedout;
+    }
+
     public void cancelMembership(Connection connection) {
         String SQL = "UPDATE `lms`.`account`\n" +
                 "SET\n" +
@@ -30,6 +36,19 @@ public class Member extends Account{
         } catch (SQLException ex) {
             System.out.println(ex.getMessage());
             ex.printStackTrace();
+        }
+    }
+
+    public void setTotalBooksCheckedout(int totalBooksCheckedout) {
+        this.totalBooksCheckedout = totalBooksCheckedout;
+    }
+
+    public void borrowBook(Connection connection, BookItem book) throws LibraryException {
+        if (getTotalBooksCheckedout() == Library.getMax_Books_Issued()) {
+           throw new LibraryException("You borrowed maximum books allowed");
+        } else {
+            setTotalBooksCheckedout(getTotalBooksCheckedout() + 1);
+            Librarian.issueBook(connection,book, this);
         }
     }
 
