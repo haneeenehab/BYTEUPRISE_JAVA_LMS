@@ -127,7 +127,7 @@ public class Librarian extends Account {
     }
 
     public static void returnBook(Connection connection, BookItem bookItem, Member member) throws LibraryException {
-        member.memberReturnBook(connection,bookItem);
+        member.memberReturnBook(connection, bookItem);
         String state = bookItem.isReserved(connection) ? "Reserved" : "Available";
         String SQL = "UPDATE `lms`.`bookItem`\n" +
                 "SET\n" +
@@ -144,7 +144,7 @@ public class Librarian extends Account {
         }
     }
 
-    public static void reserveBook(Connection connection, BookItem bookItem, Member member) throws LibraryException{
+    public static void reserveBook(Connection connection, BookItem bookItem, Member member) throws LibraryException {
         String SQLInsert = "INSERT INTO `lms`.`bookreservation`\n" +
                 "(`status`,\n" +
                 "`bookBarcode`,\n" +
@@ -165,19 +165,19 @@ public class Librarian extends Account {
         }
     }
 
-    public static void issueBook(Connection connection, BookItem bookItem, Member member) throws LibraryException {
+    public static void issueBook(Connection connection, BookItem bookItem, Member member, java.sql.Date date) throws LibraryException {
         if (bookItem.isReserved(connection) && !resMemberCheck(connection, bookItem).equals(member.getID())) {
             throw new LibraryException("Book is reserved by another member!");
         }
-        if(bookItem.getStatus(connection).equals("Loaned")){
+        if (bookItem.getStatus(connection).equals("Loaned")) {
             throw new LibraryException("Book already lent to another member");
         }
-        member.borrowBook(connection,bookItem);
+        member.borrowBook(connection, bookItem);
         String SQL = "update bookitem \n" +
                 "set bookStatus = \"Loaned\", issToMember = \"" + member.getID() +
                 "\" where barcode = \"" + bookItem.getBarcode() + "\";";
         String SQL2 = "update bookreservation \n" +
-                "set status = \"Completed\" where bookbarcode = \"" + bookItem.getBarcode() + "\";";
+                "set status = \"Completed\" where bookbarcode = \"" + bookItem.getBarcode() + "\" and memberid like \"" + member.getID() + "\"";
         try {
             connection.setAutoCommit(true);
             PreparedStatement pstmt = connection.prepareStatement(SQL,
@@ -190,24 +190,42 @@ public class Librarian extends Account {
             System.out.println(ex.getMessage());
             ex.printStackTrace();
         }
-    }
-
-    public static String resMemberCheck(Connection connection, BookItem bookItem) {
-        String SQL = "select memberId from bookreservation\n" +
-                "where bookbarcode like \"" + bookItem.getBarcode() + "\" ";
+        String SQLInsert = "INSERT INTO `lms`.`bookcheckouttransaction`\n" +
+                "(`bookBarcode`,\n" +
+                "`borrowerId`,\n" +
+                "`dueDate`)" +
+                "VALUES (?,?,?)";
         try {
-            Statement statement = connection.createStatement();
-            ResultSet resultSet = statement.executeQuery(SQL);
-            while (resultSet.next()) {
-                return resultSet.getString("memberId");
-            }
-
-        } catch (SQLException e) {
-            e.printStackTrace();
+            connection.setAutoCommit(true);
+            PreparedStatement pstmt = connection.prepareStatement(SQLInsert,
+                    Statement.RETURN_GENERATED_KEYS);
+            //todo: date
+            pstmt.setString(1, bookItem.getBarcode());
+            pstmt.setString(2, member.getID());
+            pstmt.setDate(3, date);
+            pstmt.executeUpdate();
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+            ex.printStackTrace();
         }
-        return "";
+}
 
+public static String resMemberCheck(Connection connection, BookItem bookItem) {
+    String SQL = "select memberId from bookreservation\n" +
+            "where bookbarcode like \"" + bookItem.getBarcode() + "\" ";
+    try {
+        Statement statement = connection.createStatement();
+        ResultSet resultSet = statement.executeQuery(SQL);
+        while (resultSet.next()) {
+            return resultSet.getString("memberId");
+        }
+
+    } catch (SQLException e) {
+        e.printStackTrace();
     }
+    return "";
+
+}
 
 
 }

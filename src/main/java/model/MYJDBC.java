@@ -51,6 +51,13 @@ public class MYJDBC {
                 "  memberId INT NOT NULL,\n" +
                 "  PRIMARY KEY (bookBarcode, memberId, creationDate)\n" +
                 ");";
+        String SQLCheckOut = "CREATE TABLE bookCheckOutTransaction (\n" +
+                "  bookBarcode VARCHAR(255) NOT NULL,\n" +
+                "  borrowerId INT NOT NULL,\n" +
+                "  creationDate TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,\n" +
+                "  dueDate DATE NOT NULL,\n" +
+                "  PRIMARY KEY (bookBarcode, creationDate)  \n" +
+                ");";
         try {
             connection.setAutoCommit(true);
             PreparedStatement pstmt = connection.prepareStatement(SQLAccount,
@@ -63,6 +70,8 @@ public class MYJDBC {
             pstmt2.executeUpdate();
             PreparedStatement pstmt3 = connection.prepareStatement(SQLBookReservations);
             pstmt3.executeUpdate();
+            PreparedStatement pstmt4 = connection.prepareStatement(SQLCheckOut);
+            pstmt4.executeUpdate();
 
         } catch (SQLException ex) {
             System.out.println(ex.getMessage());
@@ -85,9 +94,9 @@ public class MYJDBC {
             Member account2 = new Member("3", "pass1", person2, AccountStatus.Active, new Date(2024-1900, 6, 7), 0);
             BookItem bookItem = new BookItem("1234567890123", new java.sql.Date(2023 - 1900, 1, 1), new java.sql.Date(2023 - 1900, 1, 1), 10.99, BookStatus.Available, new java.sql.Date(2023 - 1900, 1, 1), new java.sql.Date(2023 - 1900, 1, 1));
           //  Librarian.returnBook(connection,bookItem,account2);
-            Librarian.reserveBook(connection,bookItem,account1);
+           // Librarian.reserveBook(connection,bookItem,account1);
             //Librarian.deleteBookItem(connection,bookItem);
-         //   Librarian.issueBook(connection,bookItem,account1);
+            Librarian.issueBook(connection,bookItem,account1, new java.sql.Date(2023 - 1900, 1, 1));
             System.out.println(bookItem.isReserved(connection));
         } catch (SQLException e) {
             e.printStackTrace();
