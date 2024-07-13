@@ -42,33 +42,28 @@ public class BookItem {
         return price;
     }
 
-    public String getStatus(Connection connection) {
-        try {
-            Statement statement = connection.createStatement();
-            ResultSet resultSet = statement.executeQuery("select bookStatus from bookItem where barcode = '" + barcode + "'");
-            while (resultSet.next()) {
-                return resultSet.getString("bookStatus");
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return "";
+    public String getStatus() {
+        return status.toString();
     }
 
     public boolean isReserved(Connection connection) {
+        boolean isCompleted = false;
+        String SQL = "select status from bookreservation where bookBarcode like \"" + barcode + "\"";
         try {
             Statement statement = connection.createStatement();
-            ResultSet resultSet = statement.executeQuery("select resMember from bookItem where barcode = '" + barcode + "'");
+            ResultSet resultSet = statement.executeQuery(SQL);
             while (resultSet.next()) {
-                if (resultSet.getString("resMember") != null) {
-                    return true;
+                if (!resultSet.getString("status").equals("Completed")) {
+                    isCompleted = true;
                 }
             }
+
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return false;
+        return isCompleted;
     }
+
 
     public java.sql.Date getPublicationDate() {
         return (java.sql.Date) publicationDate;
