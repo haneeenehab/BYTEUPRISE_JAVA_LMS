@@ -100,5 +100,6 @@ public class BookItem {
         }
         return false;
     }
+    //todo: editing due date
 
 }

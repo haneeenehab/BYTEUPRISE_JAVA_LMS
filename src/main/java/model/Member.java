@@ -56,9 +56,10 @@ public class Member extends Account {
 
     }
     public void memberReturnBook(Connection connection, BookItem book) throws LibraryException {
+        Librarian.returnBook(connection,book);
         setTotalBooksCheckedout(getTotalBooksCheckedout() - 1);
-        if(book.isWithinDueDate(connection)){
-
+        if(!book.isWithinDueDate(connection)){
+            //TODO:Calculate Fine
         }
     }
 
