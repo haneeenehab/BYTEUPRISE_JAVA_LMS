@@ -1,9 +1,6 @@
 package model;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 
 public class Librarian extends Account {
     public Librarian(String accountId, String password, Person person, AccountStatus status) {
@@ -187,6 +184,8 @@ public class Librarian extends Account {
             ex.printStackTrace();
         }
     }
+
+
 
 
 }

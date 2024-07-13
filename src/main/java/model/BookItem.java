@@ -47,19 +47,20 @@ public class BookItem {
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery("select bookStatus from bookItem where barcode = '" + barcode + "'");
             while (resultSet.next()) {
-               return resultSet.getString("bookStatus");
+                return resultSet.getString("bookStatus");
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
         return "";
     }
-    public boolean isReserved(Connection connection){
+
+    public boolean isReserved(Connection connection) {
         try {
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery("select resMember from bookItem where barcode = '" + barcode + "'");
             while (resultSet.next()) {
-                if (resultSet.getString("resMember") != null){
+                if (resultSet.getString("resMember") != null) {
                     return true;
                 }
             }
@@ -75,6 +76,29 @@ public class BookItem {
 
     public java.sql.Date getDateOfPurchase() {
         return (java.sql.Date) dateOfPurchase;
+    }
+
+    public boolean isWithinDueDate(Connection connection) {
+        String SQL = "SELECT \n" +
+                "  CASE\n" +
+                "    WHEN current_date <= dueDate THEN 'Returned on Time'\n" +
+                "    ELSE 'Returned Late'\n" +
+                "  END AS return_status\n" +
+                "  from lms.bookItem\n" +
+                "  where barcode like \"" + getBarcode() + "\";\n";
+        try {
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery(SQL);
+            while (resultSet.next()) {
+                if (resultSet.getString("return_status").equals("Returned on Time")) {
+                    return true;
+                }
+                return false;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 
 }

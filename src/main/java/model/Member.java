@@ -49,6 +49,16 @@ public class Member extends Account {
         } else {
             setTotalBooksCheckedout(getTotalBooksCheckedout() + 1);
             Librarian.issueBook(connection,book, this);
+            //TODO: BOOK CHECKOUT
+        }
+    }
+    public void memberReserveBook(Connection connection, BookItem book) throws LibraryException {
+
+    }
+    public void memberReturnBook(Connection connection, BookItem book) throws LibraryException {
+        setTotalBooksCheckedout(getTotalBooksCheckedout() - 1);
+        if(book.isWithinDueDate(connection)){
+
         }
     }
 
