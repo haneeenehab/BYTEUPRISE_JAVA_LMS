@@ -5,6 +5,7 @@ public class Library {
     private Address address;
     private static final int max_Books_Issued = 4;
     private static final int max_lending_days = 10;
+    private static final int finePerDay = 2;
 
     public String getName() {
         return name;

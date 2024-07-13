@@ -68,18 +68,30 @@ public class Member extends Account {
             throw new LibraryException("You borrowed maximum books allowed");
         } else {
             setTotalBooksCheckedout(connection, getTotalBooksCheckedout(connection) + 1);
-            //TODO: BOOK CHECKOUT
         }
-    }
-
-    public void memberReserveBook(Connection connection, BookItem book) throws LibraryException {
-
     }
 
     public void memberReturnBook(Connection connection, BookItem book) throws LibraryException {
         setTotalBooksCheckedout(connection, getTotalBooksCheckedout(connection) -1);
         if (!book.isWithinDueDate(connection)) {
-            //TODO:Calculate Fine
+            String SQLInsert = "INSERT INTO `lms`.`finetransaction`\n" +
+                    "`amount`,\n" +
+                    "`memberId`,\n" +
+                    "`bookBarcode`)" +
+                    "VALUES (?,?,?)";
+            try {
+                connection.setAutoCommit(true);
+                PreparedStatement pstmt = connection.prepareStatement(SQLInsert,
+                        Statement.RETURN_GENERATED_KEYS);
+                //todo: rest of method
+                pstmt.setDouble(1, 23);
+                pstmt.setString(2, getID());
+                pstmt.setString(3, book.getBarcode());
+                pstmt.executeUpdate();
+            } catch (SQLException ex) {
+                System.out.println(ex.getMessage());
+                ex.printStackTrace();
+            }
         }
     }
     public static void main(String[] args) {
@@ -94,8 +106,8 @@ public class Member extends Account {
             Address address2 = new Address("street2", "city2", "state2", "zipcode2", "country2");
             Person person2 = new Person("ahmed", address2, "012", "a@gmail.com");
             Member account2 = new Member("3", "pass1", person2, AccountStatus.Active, new Date(2024-1900, 6, 7), 0);
-            //account2.register(connection,new Date(2024-1900, 8, 2), 0);
-            //account1.register(connection, new Date(2024, 4, 2), 0);
+            account2.register(connection,new Date(2024-1900, 8, 2), 0);
+            account1.register(connection, new Date(2024, 4, 2), 0);
         } catch (
                 SQLException e) {
             e.printStackTrace();

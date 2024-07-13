@@ -87,6 +87,10 @@ public class BookItem {
         return (java.sql.Date) dateOfPurchase;
     }
 
+    public static void dayDiff(Connection connection){
+
+    }
+
     public boolean isWithinDueDate(Connection connection) {
         String SQL = "SELECT \n" +
                 "  CASE\n" +

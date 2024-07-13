@@ -89,10 +89,8 @@ public class Librarian extends Account {
                 "`price`,\n" +
                 "`bookStatus`,\n" +
                 "`dateOfPurchase`,\n" +
-                "`borrowed`,\n" +
-                "`dueDate`,\n" +
                 "`ISBN`)\n" +
-                "VALUES (?,?,?,?,?,?,?,?)";
+                "VALUES (?,?,?,?,?,?)";
         try {
             connection.setAutoCommit(true);
             PreparedStatement pstmt = connection.prepareStatement(SQL,
@@ -102,9 +100,7 @@ public class Librarian extends Account {
             pstmt.setDouble(3, bookItem.getPrice());
             pstmt.setString(4, bookItem.getStatus());
             pstmt.setDate(5, bookItem.getDateOfPurchase());
-            pstmt.setDate(6, bookItem.getBorrowed());
-            pstmt.setDate(7, bookItem.getDueDate());
-            pstmt.setString(8, book.getISBN());
+            pstmt.setString(6, book.getISBN());
             pstmt.executeUpdate();
         } catch (SQLException ex) {
             System.out.println(ex.getMessage());

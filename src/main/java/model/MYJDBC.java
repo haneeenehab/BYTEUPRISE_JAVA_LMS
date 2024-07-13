@@ -38,8 +38,6 @@ public class MYJDBC {
                 "  price DOUBLE,\n" +
                 "  bookStatus VARCHAR(255),\n" +
                 "  dateOfPurchase DATE,\n" +
-                "  borrowed DATE,\n" +
-                "  dueDate DATE,\n" +
                 "  ISBN VARCHAR(255),\n" +
                 "  issToMember VARCHAR(255),\n" +
                 "  FOREIGN KEY (ISBN) REFERENCES Book(ISBN) ON DELETE CASCADE \n" +
@@ -52,11 +50,20 @@ public class MYJDBC {
                 "  PRIMARY KEY (bookBarcode, memberId, creationDate)\n" +
                 ");";
         String SQLCheckOut = "CREATE TABLE bookCheckOutTransaction (\n" +
+                "  transactionId INT NOT NULL AUTO_INCREMENT, \n" +
                 "  bookBarcode VARCHAR(255) NOT NULL,\n" +
                 "  borrowerId INT NOT NULL,\n" +
                 "  creationDate TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,\n" +
                 "  dueDate DATE NOT NULL,\n" +
-                "  PRIMARY KEY (bookBarcode, creationDate)  \n" +
+                "  PRIMARY KEY (transactionId)  \n" +
+                ");";
+        String SQLFineTrans = "CREATE TABLE FineTransaction (\n" +
+                "  transactionId INT NOT NULL AUTO_INCREMENT, \n" +
+                "  creationDate TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,\n" +
+                "  amount DECIMAL(10,2) NOT NULL, \n" +
+                "  memberId INT NOT NULL,\n" +
+                "  bookBarcode VARCHAR(255) NOT NULL,\n" +
+                "  PRIMARY KEY (transactionId)  \n" +
                 ");";
         try {
             connection.setAutoCommit(true);
@@ -72,6 +79,8 @@ public class MYJDBC {
             pstmt3.executeUpdate();
             PreparedStatement pstmt4 = connection.prepareStatement(SQLCheckOut);
             pstmt4.executeUpdate();
+            PreparedStatement pstmt5 = connection.prepareStatement(SQLFineTrans);
+            pstmt5.executeUpdate();
 
         } catch (SQLException ex) {
             System.out.println(ex.getMessage());
@@ -93,10 +102,10 @@ public class MYJDBC {
             Person person2 = new Person("ahmed", address2, "012", "a@gmail.com");
             Member account2 = new Member("3", "pass1", person2, AccountStatus.Active, new Date(2024-1900, 6, 7), 0);
             BookItem bookItem = new BookItem("1234567890123", new java.sql.Date(2023 - 1900, 1, 1), new java.sql.Date(2023 - 1900, 1, 1), 10.99, BookStatus.Available, new java.sql.Date(2023 - 1900, 1, 1), new java.sql.Date(2023 - 1900, 1, 1));
-          //  Librarian.returnBook(connection,bookItem,account2);
-           // Librarian.reserveBook(connection,bookItem,account1);
+           Librarian.returnBook(connection,bookItem,account2);
+            //Librarian.reserveBook(connection,bookItem,account1);
             //Librarian.deleteBookItem(connection,bookItem);
-            Librarian.issueBook(connection,bookItem,account1, new java.sql.Date(2023 - 1900, 1, 1));
+            Librarian.issueBook(connection,bookItem,account1, new java.sql.Date(2023 - 1900, 7, 23));
             System.out.println(bookItem.isReserved(connection));
         } catch (SQLException e) {
             e.printStackTrace();

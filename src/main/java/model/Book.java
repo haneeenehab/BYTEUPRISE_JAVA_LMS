@@ -62,8 +62,8 @@ public class Book {
             Book book = new Book("978-0307409323", "A Short History of Nearly Everything", "Science", "Bill Bryson",
                     "English", 544, "Random House");
             BookItem bookItem = new BookItem("1234567890123", new java.sql.Date(2023 - 1900, 1, 1), new java.sql.Date(2023 - 1900, 1, 1), 10.99, BookStatus.Available, new java.sql.Date(2023 - 1900, 1, 1), new java.sql.Date(2023 - 1900, 1, 1));
-//            Librarian.addBook(connection, book);
-//            Librarian.addBookItem(connection,book,bookItem);
+           // Librarian.addBook(connection, book);
+            Librarian.addBookItem(connection,book,bookItem);
         } catch (
                 SQLException e) {
             e.printStackTrace();
