@@ -126,7 +126,8 @@ public class Librarian extends Account {
         }
     }
 
-    public static void returnBook(Connection connection, BookItem bookItem) {
+    public static void returnBook(Connection connection, BookItem bookItem, Member member) throws LibraryException {
+        member.memberReturnBook(connection,bookItem);
         String state = bookItem.isReserved(connection) ? "Reserved" : "Available";
         String SQL = "UPDATE `lms`.`bookItem`\n" +
                 "SET\n" +
@@ -143,22 +144,20 @@ public class Librarian extends Account {
         }
     }
 
-    public static void reserveBook(Connection connection, BookItem bookItem, Member member) {
+    public static void reserveBook(Connection connection, BookItem bookItem, Member member) throws LibraryException{
         String SQLInsert = "INSERT INTO `lms`.`bookreservation`\n" +
-                "(`creationDate`,\n" +
-                "`status`,\n" +
+                "(`status`,\n" +
                 "`bookBarcode`,\n" +
                 "`memberId`)" +
-                "VALUES (?,?,?,?)";
+                "VALUES (?,?,?)";
         try {
             connection.setAutoCommit(true);
             PreparedStatement pstmt = connection.prepareStatement(SQLInsert,
                     Statement.RETURN_GENERATED_KEYS);
             //todo: date
-            pstmt.setDate(1, new java.sql.Date(2023));
-            pstmt.setString(2, ReservationStatus.Pending.toString());
-            pstmt.setString(3, bookItem.getBarcode());
-            pstmt.setString(4, member.getID());
+            pstmt.setString(1, ReservationStatus.Pending.toString());
+            pstmt.setString(2, bookItem.getBarcode());
+            pstmt.setString(3, member.getID());
             pstmt.executeUpdate();
         } catch (SQLException ex) {
             System.out.println(ex.getMessage());
@@ -170,6 +169,10 @@ public class Librarian extends Account {
         if (bookItem.isReserved(connection) && !resMemberCheck(connection, bookItem).equals(member.getID())) {
             throw new LibraryException("Book is reserved by another member!");
         }
+        if(bookItem.getStatus(connection).equals("Loaned")){
+            throw new LibraryException("Book already lent to another member");
+        }
+        member.borrowBook(connection,bookItem);
         String SQL = "update bookitem \n" +
                 "set bookStatus = \"Loaned\", issToMember = \"" + member.getID() +
                 "\" where barcode = \"" + bookItem.getBarcode() + "\";";

@@ -45,11 +45,11 @@ public class MYJDBC {
                 "  FOREIGN KEY (ISBN) REFERENCES Book(ISBN) ON DELETE CASCADE \n" +
                 ");";
         String SQLBookReservations = "CREATE TABLE bookReservation (\n" +
-                "  creationDate DATE NOT NULL,\n" +
+                "  creationDate TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,\n" +
                 "  status VARCHAR(255) NOT NULL,\n" +
                 "  bookBarcode VARCHAR(255) NOT NULL,\n" +
                 "  memberId INT NOT NULL,\n" +
-                "  PRIMARY KEY (bookBarcode, memberId) \n" +
+                "  PRIMARY KEY (bookBarcode, memberId, creationDate)\n" +
                 ");";
         try {
             connection.setAutoCommit(true);
@@ -77,19 +77,17 @@ public class MYJDBC {
             );
 
             //init(connection);
-            Book book = new Book("978-0307409323", "A Short History of Nearly Everything", "Science", "Bill Bryson",
-                    "English", 544, "Random House");
-            BookItem bookItem = new BookItem("1234567890123", new java.sql.Date(2023-1900, 1, 1), new java.sql.Date(2023-1900, 1, 1), 10.99, BookStatus.Available, new java.sql.Date(2023-1900, 1, 1), new java.sql.Date(2023-1900, 1, 1));
-//            Librarian.addBook(connection, book);
-//            Librarian.addBookItem(connection,book,bookItem);
             Address address1 = new Address("street2", "city2", "state2", "zipcode2", "country2");
             Person person1 = new Person("eman", address1, "011", "e@gmail.com");
             Member account1 = new Member("2", "pass", person1, AccountStatus.Active, new Date(2024-1900, 4, 2), 0);
-            //account1.register(connection, new Date(2024, 4, 2), 0);
-           // Librarian.returnBook(connection,bookItem);
-            //Librarian.reserveBook(connection,bookItem,account1);
+            Address address2 = new Address("street2", "city2", "state2", "zipcode2", "country2");
+            Person person2 = new Person("ahmed", address2, "012", "a@gmail.com");
+            Member account2 = new Member("3", "pass1", person2, AccountStatus.Active, new Date(2024-1900, 6, 7), 0);
+            BookItem bookItem = new BookItem("1234567890123", new java.sql.Date(2023 - 1900, 1, 1), new java.sql.Date(2023 - 1900, 1, 1), 10.99, BookStatus.Available, new java.sql.Date(2023 - 1900, 1, 1), new java.sql.Date(2023 - 1900, 1, 1));
+          //  Librarian.returnBook(connection,bookItem,account2);
+            Librarian.reserveBook(connection,bookItem,account1);
             //Librarian.deleteBookItem(connection,bookItem);
-            Librarian.issueBook(connection,bookItem,account1);
+         //   Librarian.issueBook(connection,bookItem,account1);
             System.out.println(bookItem.isReserved(connection));
         } catch (SQLException e) {
             e.printStackTrace();

@@ -45,6 +45,20 @@ public class BookItem {
     public String getStatus() {
         return status.toString();
     }
+    public String getStatus(Connection connection){
+        String SQL = "select bookStatus from bookItem where barcode like \"" + barcode + "\"";
+        try {
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery(SQL);
+            while (resultSet.next()) {
+              return resultSet.getString("bookStatus");
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return "";
+    }
 
     public boolean isReserved(Connection connection) {
         boolean isCompleted = false;
