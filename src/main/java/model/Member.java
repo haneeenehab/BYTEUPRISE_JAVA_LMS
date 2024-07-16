@@ -72,7 +72,7 @@ public class Member extends Account {
     }
 
     public void memberReturnBook(Connection connection, BookItem book) throws LibraryException {
-        setTotalBooksCheckedout(connection, getTotalBooksCheckedout(connection) -1);
+        setTotalBooksCheckedout(connection, getTotalBooksCheckedout(connection) - 1);
         if (!book.isWithinDueDate(connection)) {
             String SQLInsert = "INSERT INTO `lms`.`finetransaction`\n" +
                     "`amount`,\n" +
@@ -83,8 +83,8 @@ public class Member extends Account {
                 connection.setAutoCommit(true);
                 PreparedStatement pstmt = connection.prepareStatement(SQLInsert,
                         Statement.RETURN_GENERATED_KEYS);
-                //todo: rest of method
-                pstmt.setDouble(1, 23);
+                double fine = Fine.calculateFine(connection, book);
+                pstmt.setDouble(1, fine);
                 pstmt.setString(2, getID());
                 pstmt.setString(3, book.getBarcode());
                 pstmt.executeUpdate();
@@ -94,6 +94,7 @@ public class Member extends Account {
             }
         }
     }
+
     public static void main(String[] args) {
         try {
             Connection connection = DriverManager.getConnection(
@@ -102,11 +103,11 @@ public class Member extends Account {
 
             Address address1 = new Address("street2", "city2", "state2", "zipcode2", "country2");
             Person person1 = new Person("eman", address1, "011", "e@gmail.com");
-            Member account1 = new Member("2", "pass", person1, AccountStatus.Active, new Date(2024-1900, 4, 2), 0);
+            Member account1 = new Member("2", "pass", person1, AccountStatus.Active, new Date(2024 - 1900, 4, 2), 0);
             Address address2 = new Address("street2", "city2", "state2", "zipcode2", "country2");
             Person person2 = new Person("ahmed", address2, "012", "a@gmail.com");
-            Member account2 = new Member("3", "pass1", person2, AccountStatus.Active, new Date(2024-1900, 6, 7), 0);
-            account2.register(connection,new Date(2024-1900, 8, 2), 0);
+            Member account2 = new Member("3", "pass1", person2, AccountStatus.Active, new Date(2024 - 1900, 6, 7), 0);
+            account2.register(connection, new Date(2024 - 1900, 8, 2), 0);
             account1.register(connection, new Date(2024, 4, 2), 0);
         } catch (
                 SQLException e) {
