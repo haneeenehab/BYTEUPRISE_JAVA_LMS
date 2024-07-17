@@ -9,40 +9,38 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
+import model.MYJDBC;
 
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 
 public class StartScene extends Application {
     @Override
     public void start(Stage stage) throws IOException {
-        //   Image icon = new Image();
-        // stage.getIcons().add(icon);
-        stage.setTitle("BookWise LMS");
-        Group root = new Group();
-        Scene scene = new Scene(root, 200, 200);
-        prepareLoginButton(root, stage);
-        prepareRegisterButton(root, stage);
-//        prepareStartButton(root, stage);
-//        prepareDescription(root);
-//        prepareName(root);
-        stage.setScene(scene);
-        stage.setFullScreen(true);
-        TextField b = new TextField();
-       // Label l = new Label("no text");
-        EventHandler<ActionEvent> event = new EventHandler<ActionEvent>() {
-            public void handle(ActionEvent e)
-            {
-                //l.setText(b.getText());
-            }
-        };
-        b.setOnAction(event);
-       // root.getChildren().add(b);
-      //  root.getChildren().add(l);
-        stage.show();
-        //TextInputPopup.test(stage);
+        try {
+            Connection connection = DriverManager.getConnection(
+                    "jdbc:mysql://127.0.0.1:3306/lms", "root", "1234"
+            );
+            MYJDBC.init(connection);
+            //   Image icon = new Image();
+            // stage.getIcons().add(icon);
+            stage.setTitle("BookWise LMS");
+            Group root = new Group();
+            Scene scene = new Scene(root, 200, 200);
+            prepareLoginButton(connection, root, stage);
+            prepareRegisterButton(root, stage);
+            stage.setScene(scene);
+            stage.setFullScreen(true);
+            TextField b = new TextField();
+            stage.show();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    public static void prepareLoginButton(Group root, Stage stage) {
+    public static void prepareLoginButton(Connection connection, Group root, Stage stage) {
         Button login = new Button("Login");
         login.setTranslateX(550);
         login.setTranslateY(60);
@@ -53,7 +51,7 @@ public class StartScene extends Application {
         login.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
             public void handle(MouseEvent me) {
                 try {
-                    Login.logIn(stage);
+                    Login.logIn(connection, stage);
                 } catch (Exception e) {
                     throw new RuntimeException(e);
                 }

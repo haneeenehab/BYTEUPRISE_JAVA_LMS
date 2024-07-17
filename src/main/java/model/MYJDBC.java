@@ -91,7 +91,7 @@ public class MYJDBC {
     public static void main(String[] args) {
         try {
             Connection connection = DriverManager.getConnection(
-                    "jdbc:mysql://127.0.0.1:3306/lms", "root", "1234"
+                    "jdbc:mysql://localhost:3306/lms", "root", "1234"
             );
 
             //init(connection);
